@@ -6,12 +6,14 @@ const app = express();
 const database = {
   users: [
     {
+      id: 1,
       name: 'Sarah',
       email: 'sarah@gmail.com',
       password: 'cookies',
       entries: 0,
       joined: new Date()
     }, {
+      id: 2,
       name: 'Joe',
       email: 'joe@yahoo.com',
       password: '1234',
@@ -36,6 +38,21 @@ const databaseContains = (body) => {
   return false;
 };
 
+app.post('/register', (req, res) => {
+  const {name, email, password} = req.body;
+
+  database.users.push({
+    id: 3,
+    name: name,
+    email: email,
+    password: password,
+    entries: 0,
+    joined: new Date()
+  });
+
+  res.json(database.users[database.users.length-1]);
+});
+
 app.post('/signin', (req, res) => {
   if (databaseContains(req.body)) {
     res.json('success');
@@ -45,7 +62,7 @@ app.post('/signin', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('this is working!');
+  res.json(database.users);
 });
 
 app.listen(3000, () => {

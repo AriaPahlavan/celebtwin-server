@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const bcrypt = require('bcrypt-nodejs');
 
 const dbname = 'emojifydb';
 const db = require('knex')({
@@ -80,15 +81,25 @@ app.post('/signin', (req, res) => {
 
 app.post('/register', (req, res) => {
   const {name, email, password} = req.body;
+  const hash = bcrypt.hashSync(password);
 
-  db('users')
-  .returning('*')
-  .insert({
-    name: name,
-    email: email,
-    joined: new Date()
+  db.transaction(trx => {
+    trx.insert({ hash: hash, email: email })
+       .into('login')
+       .returning('email')
+       .then(loginEmail => {
+         return trx.insert({
+              name: name,
+              email: email,
+              joined: new Date()
+            })
+            .into('users')
+            .returning('*')
+            .then(user => res.json(user[0]))
+       })
+       .then(trx.commit)
+       .catch(trx.rollback);
   })
-  .then(user => res.json(user[0]))
   .catch(err => res.status(400).json('unable to register'));
 });
 

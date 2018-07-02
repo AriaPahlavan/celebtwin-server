@@ -2,6 +2,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const dbname = 'emojifydb';
+const db = require('knex')({
+  client: 'pg',
+  connection: {
+    host : '127.0.0.1',
+    user : 'ariapahlavan',
+    password : '',
+    database : dbname
+  }
+});
+
+db.select('*').from('users').then(console.log);
+
 const database = {
   users: [
     {

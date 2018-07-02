@@ -13,8 +13,6 @@ const db = require('knex')({
   }
 });
 
-db.select('*').from('users').then(console.log);
-
 const database = {
   users: [
     {
@@ -82,16 +80,15 @@ app.post('/signin', (req, res) => {
 app.post('/register', (req, res) => {
   const {name, email, password} = req.body;
 
-  database.users.push({
-    id: 3,
+  db('users')
+  .returning('*')
+  .insert({
     name: name,
     email: email,
-    password: password,
-    entries: 0,
     joined: new Date()
-  });
-
-  res.json(database.users[database.users.length-1]);
+  })
+  .then(user => res.json(user[0]))
+  .catch(err => res.status(400).json('unable to register'));
 });
 
 
@@ -104,7 +101,7 @@ app.put('/image', (req, res) => {
       user.entries++;
       res.json(user.entries);
     },
-    () => res.status(400).json('not such user')
+    () => res.status(400).json('no such user')
   );
 });
 

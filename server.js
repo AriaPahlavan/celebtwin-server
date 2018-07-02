@@ -37,17 +37,29 @@ const databaseContains = (predicate, onPresent, onAbsent) => {
   return onAbsent();
 };
 
+app.get('/', (req, res) => {
+  res.json(database.users);
+});
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
 
   databaseContains(
     user => user.id === Number(id),
     user => res.json(user),
-    () => res.json('no such user')
+    () => res.status(400).json('no such user')
   );
 
 });
 
+app.post('/signin', (req, res) => {
+  const body = req.body;
+
+  databaseContains(
+    user => body.email === user.email && body.password === user.password,
+    user => res.json('success'),
+    () => res.status(404).json('error logging in')
+  );
+});
 app.post('/register', (req, res) => {
   const {name, email, password} = req.body;
 
@@ -63,18 +75,17 @@ app.post('/register', (req, res) => {
   res.json(database.users[database.users.length-1]);
 });
 
-app.post('/signin', (req, res) => {
-  const body = req.body;
+app.put('/image', (req, res) => {
+  const id = Number(req.body.id);
 
   databaseContains(
-    user => body.email === user.email && body.password === user.password,
-    user => res.json('success'),
-    () => res.status(404).json('error logging in')
+    user => user.id === id,
+    user => {
+      user.entries++;
+      res.json(user.entries);
+    },
+    () => res.status(400).json('not such user')
   );
-});
-
-app.get('/', (req, res) => {
-  res.json(database.users);
 });
 
 app.listen(3000, () => {

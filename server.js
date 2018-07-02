@@ -1,8 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const app = express();
-
 const database = {
   users: [
     {
@@ -24,19 +22,31 @@ const database = {
   ]
 }
 
+
+const app = express();
+
 app.use(bodyParser.json());
 
-
-const databaseContains = (body) => {
+const databaseContains = (predicate, onPresent, onAbsent) => {
   for (let i = 0; i < database.users.length; i++) {
     const user = database.users[i];
-    if (body.email === user.email &&
-        body.password === user.password)
-          return true;
+    if (predicate(user))
+          return onPresent(user);
   }
 
-  return false;
+  return onAbsent();
 };
+
+app.get('/profile/:id', (req, res) => {
+  const { id } = req.params;
+
+  databaseContains(
+    user => user.id === Number(id),
+    user => res.json(user),
+    () => res.json('no such user')
+  );
+
+});
 
 app.post('/register', (req, res) => {
   const {name, email, password} = req.body;
@@ -54,11 +64,13 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/signin', (req, res) => {
-  if (databaseContains(req.body)) {
-    res.json('success');
-  } else {
-    res.status(404).json('error loggin in');
-  }
+  const body = req.body;
+
+  databaseContains(
+    user => body.email === user.email && body.password === user.password,
+    user => res.json('success'),
+    () => res.status(404).json('error logging in')
+  );
 });
 
 app.get('/', (req, res) => {

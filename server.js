@@ -61,7 +61,7 @@ app.get('/profile/:id', (req, res) => {
     .from('users')
     .where({id})
     .then(user => {
-      if (user.length) { res.json(user[0]); }
+      if (user.length>0) { res.json(user[0]); }
       else { res.status(400).json('no such user'); }
     })
     .catch(err => res.status(400).json('error getting user'));
@@ -94,16 +94,16 @@ app.post('/register', (req, res) => {
 
 
 app.put('/image', (req, res) => {
-  const id = Number(req.body.id);
-
-  databaseContains(
-    user => user.id === id,
-    user => {
-      user.entries++;
-      res.json(user.entries);
-    },
-    () => res.status(400).json('no such user')
-  );
+  const {id} = req.body;
+  db('users')
+    .where('id', '=', id)
+    .increment('entries', 1)
+    .returning('entries')
+    .then(entries => {
+      if (entries.length>0) { res.json(entries[0]); }
+      else { res.status(400).json('no such user'); }
+    })
+    .catch(err => res.status(400).json('no such user'));
 });
 
 app.listen(3000, () => {

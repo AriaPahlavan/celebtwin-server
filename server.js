@@ -14,28 +14,6 @@ const db = require('knex')({
   }
 });
 
-const database = {
-  users: [
-    {
-      id: 1,
-      name: 'Sarah',
-      email: 'sarah@gmail.com',
-      password: 'cookies',
-      entries: 0,
-      joined: new Date()
-    }, {
-      id: 2,
-      name: 'Joe',
-      email: 'joe@yahoo.com',
-      password: '1234',
-      entries: 0,
-      joined: new Date()
-    }
-  ]
-}
-
-
-
 const app = express();
 
 app.use(bodyParser.json());

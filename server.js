@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const database = {
   users: [
@@ -26,6 +27,7 @@ const database = {
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors()); 
 
 const databaseContains = (predicate, onPresent, onAbsent) => {
   for (let i = 0; i < database.users.length; i++) {

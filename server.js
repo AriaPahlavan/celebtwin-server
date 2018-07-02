@@ -19,15 +19,15 @@ const database = {
       entries: 0,
       joined: new Date()
     }
-
   ]
 }
+
 
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors()); 
+app.use(cors());
 
 const databaseContains = (predicate, onPresent, onAbsent) => {
   for (let i = 0; i < database.users.length; i++) {
@@ -39,9 +39,11 @@ const databaseContains = (predicate, onPresent, onAbsent) => {
   return onAbsent();
 };
 
+
 app.get('/', (req, res) => {
   res.json(database.users);
 });
+
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
 
@@ -53,15 +55,17 @@ app.get('/profile/:id', (req, res) => {
 
 });
 
+
 app.post('/signin', (req, res) => {
   const body = req.body;
 
   databaseContains(
     user => body.email === user.email && body.password === user.password,
-    user => res.json('success'),
-    () => res.status(404).json('error logging in')
+    user => res.json(user),
+    () => res.status(400).json('error logging in')
   );
 });
+
 app.post('/register', (req, res) => {
   const {name, email, password} = req.body;
 
@@ -76,6 +80,7 @@ app.post('/register', (req, res) => {
 
   res.json(database.users[database.users.length-1]);
 });
+
 
 app.put('/image', (req, res) => {
   const id = Number(req.body.id);

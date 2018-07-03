@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt-nodejs');
-const signin = require('./controllers/SignIn.js');
+const signin = require('./controllers/SignIn');
 const register = require('./controllers/Register');
 const profile = require('./controllers/Profile');
 const image = require('./controllers/Image');
@@ -24,12 +24,12 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-app.get('/profile/:id', (req, res) => profile.retreive(req, res, db));
+app.get('/profile/:id', profile.retreive(db));
 
-app.post('/signin', (req, res) => signin.signIn(req, res, db, bcrypt));
+app.post('/signin', signin.signIn(db, bcrypt));
 
-app.post('/register', (req, res) => register.registration(req, res, db, bcrypt));
+app.post('/register', register.registration(db, bcrypt));
 
-app.put('/image', (req, res) => image.incrementEntry(req, res, db));
+app.put('/image', image.incrementEntry(db));
 
 app.listen(3000);

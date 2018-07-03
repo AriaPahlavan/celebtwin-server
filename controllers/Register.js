@@ -1,4 +1,4 @@
-const registration = (req, res, db, bcrypt) => {
+const registration = (db, bcrypt) => (req, res) => {
   const {name, email, password} = req.body;
   const hash = bcrypt.hashSync(password);
 

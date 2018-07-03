@@ -1,4 +1,4 @@
-const retreive = (req, res, db) => {
+const retreive = db => (req, res) => {
   const { id } = req.params;
   db.select('*')
     .from('users')

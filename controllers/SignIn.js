@@ -1,4 +1,4 @@
-const signIn = (req, res, db, bcrypt) => {
+const signIn = (db, bcrypt) => (req, res) => {
   const {email, password} = req.body;
 
   db.select('email', 'hash')

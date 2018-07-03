@@ -1,4 +1,4 @@
-const incrementEntry = (req, res, db) => {
+const incrementEntry = db => (req, res) => {
   const {id} = req.body;
   db('users')
     .where('id', '=', id)

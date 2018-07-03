@@ -1,7 +1,10 @@
 const registration = (db, bcrypt) => (req, res) => {
   const {name, email, password} = req.body;
-  const hash = bcrypt.hashSync(password);
 
+  if (!name || !email || !password)
+    return res.status(400).json('invalid form submission');
+
+  const hash = bcrypt.hashSync(password);
   db.transaction(trx => {
     trx.insert({ hash: hash, email: email })
        .into('login')

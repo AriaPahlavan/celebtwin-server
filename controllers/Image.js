@@ -1,3 +1,20 @@
+const clarifai = require('clarifai');
+
+const app = new Clarifai.App({
+ apiKey: process.env.CLARIFAI
+});
+
+
+const detectionApiCall = (req, res) => {
+  const imageUrl = req.body.imageUrl;
+
+  app.models
+     .predict(Clarifai.FACE_DETECT_MODEL, imageUrl)
+     .then(response => res.json(response))
+     .catch(err => res.status(400).json('API call error'));
+};
+
+
 const incrementEntry = db => (req, res) => {
   const {id} = req.body;
   db('users')
@@ -13,5 +30,6 @@ const incrementEntry = db => (req, res) => {
 
 
 module.exports = {
+  detectionApiCall : detectionApiCall,
   incrementEntry: incrementEntry
 };

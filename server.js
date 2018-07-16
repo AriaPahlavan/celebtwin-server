@@ -7,29 +7,22 @@ const register = require('./controllers/Register');
 const profile = require('./controllers/Profile');
 const image = require('./controllers/Image');
 
-const dbname = 'emojifydb';
 const db = require('knex')({
   client: 'pg',
   connection: {
-    host : '127.0.0.1',
-    user : 'ariapahlavan',
-    password : '',
-    database : dbname
+    connectionString : process.env.DATABASE_URL,
+    ssl: true
   }
 });
 
-const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
-
-app.use(cors());
-
-app.get('/profile/:id', profile.retreive(db));
-
-app.post('/signin', signin.signIn(db, bcrypt));
-
-app.post('/register', register.registration(db, bcrypt));
-
-app.put('/image', image.incrementEntry(db));
-
-app.listen(3000);
+express().use(bodyParser.json())
+         .use(cors())
+         .get('/', (req, res) => res.json(''))
+         .get('/profile/:id', profile.retreive(db))
+         .post('/signin', signin.signIn(db, bcrypt))
+         .post('/register', register.registration(db, bcrypt))
+         .post('/imageUrl', image.detectionApiCall)
+         .put('/image', image.incrementEntry(db))
+         .listen(PORT, () => console.log(`Listening on port ${PORT}`));

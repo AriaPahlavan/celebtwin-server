@@ -5,11 +5,14 @@ const app = new Clarifai.App({
 });
 
 
+// const modelId = Clarifai.FACE_DETECT_MODEL;
+const modelId = 'e466caa0619f444ab97497640cefc4dc';
+
 const detectionApiCall = (req, res) => {
   const imageUrl = req.body.imageUrl;
 
   app.models
-     .predict(Clarifai.FACE_DETECT_MODEL, imageUrl)
+     .predict(modelId, imageUrl)
      .then(response => res.json(response))
      .catch(err => res.status(400).json('API call error'));
 };

@@ -15,6 +15,11 @@
 
 You can grab Clarifai API key [here](https://clarifai.com/)
 
+__TODOS__
+- Set up CircleCI
+- Set up session id management
+- Configure the Dockerfile
+
 
 # This is the api server for Celebtwin:
 

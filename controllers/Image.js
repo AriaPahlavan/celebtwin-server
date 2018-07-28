@@ -1,11 +1,11 @@
+// clarifai api setup
 const clarifai = require('clarifai');
-
 const app = new Clarifai.App({
  apiKey: process.env.CLARIFAI
 });
 
 
-// const modelId = Clarifai.FACE_DETECT_MODEL;
+// celebrity detection model ID
 const modelId = 'e466caa0619f444ab97497640cefc4dc';
 
 const detectionApiCall = (req, res) => {
